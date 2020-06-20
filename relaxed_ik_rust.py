@@ -8,34 +8,38 @@ from relaxed_ik_ros2.msg import EEPoseGoals, JointAngles
 from std_msgs.msg import Float64
 # from RelaxedIK.Utils.colors import bcolors
 # from RelaxedIK.relaxedIK import get_relaxedIK_from_info_file
-
+from ament_index_python.packages import get_package_share_directory
 from cffi import FFI
+
+# may raise PackageNotFoundError
+package_share_directory = get_package_share_directory('relaxed_ik_ros2')
+
 ffi = FFI()
 ffi.cdef("""
     double* run(double **pos_goals, double **quat_goals);
 """)
-C = ffi.dlopen("../relaxed_ik_core/target/debug/librelaxed_ik_node_ros2.so")
+C = ffi.dlopen(package_share_directory + '/relaxed_ik_core/target/debug/librelaxed_ik_node_ros2.so')
 
 eepg = None
-def eePoseGoals_cb(data):
+def eePoseGoals_cb(msg):
     global eepg
-    eepg = data
+    eepg = msg
 
 def main(args=None):
+    global eepg
+
+    print("\nSolver initialized!\n")
+
     rclpy.init()
-    node = rclpy.create_node('relaxed_ik_node')
+    node = rclpy.create_node('relaxed_ik')
+    node.create_subscription(EEPoseGoals, '/relaxed_ik/ee_pose_goals', eePoseGoals_cb, 3)
+
     angles_pub = node.create_publisher(JointAngles, '/relaxed_ik/joint_angle_solutions', 3)
-    goals_sub = node.create_subscription(EEPoseGoals, '/relaxed_ik/ee_pose_goals', eePoseGoals_cb, 3)
-    goals_sub
 
-    # path_to_src = os.path.dirname(__file__)
+    rclpy.spin_once(node)
 
-    # relaxedIK = get_relaxedIK_from_info_file(path_to_src)
-    # num_chains = relaxedIK.vars.robot.numChains
+    rate = node.create_rate(3000.0)
 
-    while eepg == None: continue
-
-    rate = rospy.Rate(3000.0)
     while rclpy.ok():
         pos_goals = []
         quat_goals = []
@@ -65,6 +69,8 @@ def main(args=None):
         # print xopt
 
         rate.sleep()
+
+    rclpy.shutdown()
 
 
 if __name__ == '__main__':
