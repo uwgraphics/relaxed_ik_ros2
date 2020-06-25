@@ -16,7 +16,7 @@ class Opt(ctypes.Structure):
 package_share_directory = get_package_share_directory('relaxed_ik_ros2')
 os.chdir(package_share_directory + '/relaxed_ik_core')
 
-lib = ctypes.cdll.LoadLibrary(package_share_directory + '/relaxed_ik_core/target/debug/librelaxed_ik_ros2.so')
+lib = ctypes.cdll.LoadLibrary(package_share_directory + '/relaxed_ik_core/target/debug/librelaxed_ik.so')
 lib.rust_run.restype = Opt
 
 eepg = None
