@@ -42,7 +42,7 @@ install(
 
 # Install nodes
 install(
-  FILES relaxed_ik_rust.py
+  FILES relaxed_ik_rust.py rviz_viewer.py keyboard_ikgoal_driver.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
