@@ -66,7 +66,7 @@ if __name__ == '__main__':
     # node.declare_parameter('robot_description', urdf_string)
     js_pub = node.create_publisher(JointState,'joint_states',5)
     node.create_subscription(JointAngles,'/relaxed_ik/joint_angle_solutions',ja_solution_cb,5)
-    tf_pub = tf2_ros.TransformBroadcaster(node)
+    tf_pub = tf2_ros.StaticTransformBroadcaster(node)
 
     time.sleep(0.5)
 
@@ -75,14 +75,14 @@ if __name__ == '__main__':
             package='rviz2',
             name='rviz2',
             node_executable='rviz2',
-            arguments=[package_share_directory + "/relaxed_ik_core/rviz/joint_viewer.rviz"]
+            # arguments=[package_share_directory + "/relaxed_ik_core/rviz/joint_viewer.rviz"]
         ),
         launch_ros.actions.Node(
             package='robot_state_publisher',
             name='robot_state_publisher',
             node_executable='robot_state_publisher',
             arguments=[urdf_path],
-            parameters=[{'publish_frequency': '50.0'}, {'tf_prefix': ""}],
+            parameters=[{'publish_frequency': '50.0'}],
         )
     ])
     print(launch.LaunchIntrospector().format_launch_description(ld))
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     ls.include_launch_description(ld)
     ls.run()
 
-    urdf_pub = node.create_publisher(String, '/robot_description', 3)
+    urdf_pub = node.create_publisher(String, '/robot_description', 1)
     urdf_msg = String()
     urdf_msg.data = urdf_string
     urdf_pub.publish(urdf_msg)
@@ -107,18 +107,18 @@ if __name__ == '__main__':
     while rclpy.ok():
         t = geometry_msgs.msg.TransformStamped()
         t.header.stamp = node.get_clock().now().to_msg()
-        t.header.frame_id = "common_world"
-        t.child_frame_id = fixed_frame
+        t.header.frame_id = fixed_frame
+        t.child_frame_id = "common_world"
         t.transform.translation.x = 0.0
         t.transform.translation.y = 0.0
         t.transform.translation.z = 0.0
         q = T.quaternion_from_euler(0, 0, 0)
-        t.transform.rotation.x = q[0]
-        t.transform.rotation.y = q[1]
-        t.transform.rotation.z = q[2]
-        t.transform.rotation.w = q[3]
-
+        t.transform.rotation.w = q[0]
+        t.transform.rotation.x = q[1]
+        t.transform.rotation.y = q[2]
+        t.transform.rotation.z = q[3]
         tf_pub.sendTransform(t)
+
         if len(ja_solution) == 0:
             xopt = starting_config
         else:
@@ -135,9 +135,10 @@ if __name__ == '__main__':
             for x in xopt:
                 js.position.append(x)
         now = node.get_clock().now().to_msg()
-        # js.header.stamp.secs = now.sec
-        # js.header.stamp.nsecs = now.nsec
+        js.header.stamp.sec = now.sec
+        js.header.stamp.nanosec = now.nanosec
         js_pub.publish(js)
+
         time.sleep(0.2)
 	
     node.destroy_node()
