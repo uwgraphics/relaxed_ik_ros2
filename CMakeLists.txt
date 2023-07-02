@@ -26,7 +26,7 @@ find_package(builtin_interfaces REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/EEPoseGoals.msg"
-  "msg/JointAngles.msg"
+  "msg/EEVelGoals.msg"
   # "srv/IKSolution.srv"
   # "srv/RelaxedIKSolution.srv"
   # "srv/Reset.srv"
@@ -36,13 +36,13 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
 # Install launch files
 install(
-  DIRECTORY launch relaxed_ik_core
+  DIRECTORY launch relaxed_ik_core rviz
   DESTINATION share/${PROJECT_NAME}
 )
 
 # Install nodes
 install(
-  FILES relaxed_ik_rust.py rviz_viewer.py keyboard_ikgoal_driver.py
+  FILES scripts/relaxed_ik_rust.py scripts/rviz_viewer.py scripts/keyboard_input.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

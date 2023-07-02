@@ -1,28 +1,63 @@
 # relaxed_ik_ros2
 
-This is Relaxed IK wrapped up in ROS2. It's still under developed.
+This is Relaxed IK wrapped up in ROS2. **Currently it's only tested on ROS2 Foxy**
 
 ## Run
-1. Configure the name of the pre-computed robot you would like to run with  (available options are ur5, yumi, panda and iiwa7) in relaxed_ik_core/config/loaded_robot.
+1. Clone this repo to `your_workspace/src`
 
-2. Build the workspace and source the package:
+2. Clone git submodules
+```bash
+cd relaxed_ik_ros2
+git submodule init
+git submodule update
+``` 
+
+3. Compile relaxed_ik_core
+```bash
+cd relaxed_ik_core
+cargo build
 ```
+
+4. Clone robot descriptions under `your_workspace/src`. 
+    * UR5 (Foxy): https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/tree/foxy (you can only keep the ur_description package) 
+
+
+5. Build the workspace and source the package:
+```bash
 colcon build --symlink-install
 . install/setup.bash
 ```
 
-3. Run the following command:
-```
-ros2 launch relaxed_ik_ros2 relaxed_ik_rust.launch
-```
-
-4. Test by opening a new terminal and publishing a message to EE pose goals
-```
-. install/setup.bash
-ros2 topic pub -1 /relaxed_ik/ee_pose_goals relaxed_ik_ros2/msg/EEPoseGoals "{header: {stamp: {sec: 0, nanosec: 0}, frame_id: 'base_link'}, ee_poses: [{position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}]}"
+6. Run relaxed_ik and a rviz viewer:
+```bash
+ros2 launch relaxed_ik_ros2 demo.launch.py
 ```
 
-## Known issues
-1. The ROS2 version cannot listen to ee_pose_goal messages after the first one.
+7.  To move the robot using keyboard, open a new terminal
+```bash
+ros2 run relaxed_ik_ros2 keyboard_input.py 
+```
 
-2. I didn't figure out a way to implement the equivalence of executing a loop at a fixed rate in ROS2 with rclpy. rclpy.timer.Rate.sleep() does not work perfectly in this case.
+And then use the folloing commands to move the robot.
+```bash
+c - kill the controller controller script
+w - move chain 1 along +X
+x - move chain 1 along -X
+a - move chain 1 along +Y
+d - move chain 1 along -Y
+q - move chain 1 along +Z
+z - move chain 1 along -Z
+1 - rotate chain 1 around +X
+2 - rotate chain 1 around -X
+3 - rotate chain 1 around +Y
+4 - rotate chain 1 around -Y
+5 - rotate chain 1 around +Z
+6 rotate chain 1 around -Z
+```
+
+## TODO
+[] Test on a newer version of ROS2, e.g., humble.
+
+[] Visualize end-effector goal poses in Rviz 
+
+[] Add a service for relaxed-ik (currently you can only use topic)

@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-   <node pkg="relaxed_ik_ros2" exec="rviz_viewer.py" name="rviz_viewer" output="screen"/>
-</launch>

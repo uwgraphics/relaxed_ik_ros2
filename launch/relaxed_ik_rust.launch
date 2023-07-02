@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-   <node pkg="relaxed_ik_ros2" exec="relaxed_ik_rust.py" name="relaxed_ik_node" output="screen"/>
-</launch>
