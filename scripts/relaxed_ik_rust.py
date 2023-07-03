@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/python3
 
 import ctypes
 import numpy as np
@@ -27,22 +27,24 @@ from python_wrapper import RelaxedIKRust
 class RelaxedIK(Node):
     def __init__(self):
         super().__init__('relaxed_ik')
-        # rospy.sleep(1)
+        self.declare_parameter('setting_file_path', rclpy.Parameter.Type.STRING)
+        self.declare_parameter('use_visualization', rclpy.Parameter.Type.BOOL)
 
         default_setting_file_path = path_to_src + '/configs/settings.yaml'
 
         setting_file_path = ""
         try: 
-            setting_file_path = self.get_parameter('~setting_file_path')
+            setting_file_path = self.get_parameter('setting_file_path').value
+            self.get_logger().info("Using setting file " + setting_file_path)
         except:
             pass
 
         if setting_file_path == "":
-            print("Rviz viewer: no setting file path is given, using the default setting file -- {}".format(default_setting_file_path))
+            self.get_logger().info(f"No setting file path is given, using the default setting file {default_setting_file_path}")
             setting_file_path = default_setting_file_path
 
         try: 
-            self.use_visualization = self.get_parameter('~use_visualization')
+            self.use_visualization = self.get_parameter('use_visualization').value
         except:
             self.use_visualization = False
 

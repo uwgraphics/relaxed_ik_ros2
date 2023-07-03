@@ -23,7 +23,7 @@ from visualization_msgs.msg import *
 import subprocess
 from urdf_parser_py.urdf import URDF
 from geometry_msgs.msg import Point
-from relaxed_ik_ros1.msg import EEPoseGoals, EEVelGoals
+from relaxed_ik_ros2.msg import EEPoseGoals, EEVelGoals
 from ament_index_python.packages import get_package_share_directory
 
 path_to_src = get_package_share_directory('relaxed_ik_ros2')
@@ -32,13 +32,16 @@ class RvizViewer(Node):
     def __init__(self):
         super().__init__('rviz_viewer')
 
+        self.declare_parameter('setting_file_path', rclpy.Parameter.Type.STRING)
+
         deault_setting_file_path = path_to_src + '/relaxed_ik_core/configs/settings.yaml'
 
         setting_file_path = deault_setting_file_path
         try:
-            setting_file_path = self.get_parameter('setting_file_path')
+            setting_file_path = self.get_parameter('setting_file_path').value
+            self.get_logger().info("Using setting file " + setting_file_path)
         except:
-            print("Rviz viewer: no setting file path is given, using default setting files --" + setting_file_path)
+            self.get_logger().info("No setting file path is given, using default setting file" + setting_file_path)
 
         # Load the infomation
         setting_file = open(setting_file_path, 'r')
