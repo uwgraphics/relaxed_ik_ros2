@@ -2,7 +2,11 @@
 
 This is Relaxed IK wrapped up in ROS2. **Currently it's only tested on ROS2 Foxy**
 
-## Run
+## Prerequisites
+- You will need ROS 2 installed on your system
+- You will need to [install Rust](https://www.rust-lang.org/tools/install) if you haven't already in order to build relaxed_ik_core.
+
+## Installation
 1. Clone this repo to `your_workspace/src`
 
 2. Clone git submodules
@@ -27,13 +31,13 @@ cargo build
 colcon build --symlink-install
 . install/setup.bash
 ```
-
-6. Run relaxed_ik and a rviz viewer:
+## Running
+1. Run relaxed_ik and a rviz viewer:
 ```bash
 ros2 launch relaxed_ik_ros2 demo.launch.py
 ```
 
-7.  To move the robot using keyboard, open a new terminal
+2.  To move the robot using keyboard, open a new terminal
 ```bash
 ros2 run relaxed_ik_ros2 keyboard_input.py 
 ```
