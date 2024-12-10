@@ -10,7 +10,7 @@ import rclpy
 from rclpy.node import Node
 from ament_index_python.packages import get_package_share_directory
 
-# from relaxed_ik_ros2.srv import IKPose, IKPoseResponse
+from relaxed_ik_ros2.srv import IKPose
 from relaxed_ik_ros2.msg import EEPoseGoals, EEVelGoals
 from geometry_msgs.msg import Point
 from std_msgs.msg import Float64
@@ -34,7 +34,7 @@ class RelaxedIK(Node):
 
         setting_file_path = ""
         try: 
-            setting_file_path = self.get_parameter('setting_file_path').value
+            setting_file_path = os.path.join(path_to_src, "configs", self.get_parameter('setting_file_path').value)
             self.get_logger().info("Using setting file " + setting_file_path)
         except:
             pass
@@ -63,7 +63,7 @@ class RelaxedIK(Node):
         self.relaxed_ik = RelaxedIKRust(setting_file_path)
 
         # Services
-        # self.ik_pose_service = rospy.Service('relaxed_ik/solve_pose', IKPose, self.handle_ik_pose)
+        self.ik_pose_service = self.create_service(IKPose, 'relaxed_ik/solve_pose', self.handle_ik_pose)
 
         # Publishers
         self.angles_pub = self.create_publisher(JointState, 'relaxed_ik/joint_angle_solutions', 1)
@@ -98,7 +98,7 @@ class RelaxedIK(Node):
         ee_poses = ee_poses.tolist()
         return ee_poses
 
-    def handle_ik_pose(self, req):
+    def handle_ik_pose(self, req, res):
         positions = []
         orientations = []
         tolerances = []
@@ -132,9 +132,10 @@ class RelaxedIK(Node):
         self.js_msg.header.stamp = self.get_clock().now().to_msg()
         self.js_msg.position = ik_solution
         self.angles_pub.publish(self.js_msg)
-        res = IKPoseResponse()
+        # res = IKPose.Response()
         res.joint_state = ik_solution
 
+        self.get_logger().info("generated IK pose" + str(res))
         return res
 
     def reset_cb(self, msg):

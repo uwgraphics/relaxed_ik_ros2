@@ -38,7 +38,11 @@ class RvizViewer(Node):
 
         setting_file_path = deault_setting_file_path
         try:
-            setting_file_path = self.get_parameter('setting_file_path').value
+            setting_file_path = os.path.join(
+                path_to_src,
+                "relaxed_ik_core/configs/",
+                self.get_parameter('setting_file_path').value
+            )
             self.get_logger().info("Using setting file " + setting_file_path)
         except:
             self.get_logger().info("No setting file path is given, using default setting file" + setting_file_path)

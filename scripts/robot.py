@@ -29,6 +29,7 @@ class Robot():
 
         urdf_name = settings["urdf"]
         
+        print("[ROBOT.PY] loading urdf at " + path_to_src + "/configs/urdfs/" + urdf_name)
         self.robot = URDF.from_xml_file(path_to_src + "/configs/urdfs/" + urdf_name)
         self.kdl_tree = kdl_tree_from_urdf_model(self.robot)
         

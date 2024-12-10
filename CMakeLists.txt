@@ -27,6 +27,8 @@ find_package(builtin_interfaces REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/EEPoseGoals.msg"
   "msg/EEVelGoals.msg"
+  "srv/IKPose.srv"
+  "srv/IKVelocity.srv"
   # "srv/IKSolution.srv"
   # "srv/RelaxedIKSolution.srv"
   # "srv/Reset.srv"
