@@ -2,6 +2,22 @@
 
 This is Relaxed IK wrapped up in ROS2. **The current version of this repository is made for ROS 2 Iron / Ubuntu 22.04**. It may also work on other ROS 2 versions.
 
+You can find an introduction and the citation information in the README of [RelaxedIK Core](https://github.com/uwgraphics/relaxed_ik_core/tree/ranged-ik) which is a submodule of this repo. It is recommended to look at [RelaxedIK Core](https://github.com/uwgraphics/relaxed_ik_core) before working with this wrapper.
+
+## The RelaxedIK Family
+[RangedIK](https://github.com/uwgraphics/relaxed_ik_core/tree/ranged-ik) extends [RelaxedIK](https://github.com/uwgraphics/relaxed_ik_core/tree/relaxed-ik) by leveraging the flexibility afforded by tolerances. Also, RangedIK is recently maintained and works with more recent rust versions.
+
+[CollisionIK](https://github.com/uwgraphics/relaxed_ik_core/tree/collision-ik) extends [RelaxedIK](https://github.com/uwgraphics/relaxed_ik_core/tree/relaxed-ik) by avoiding collisions with static or dynamic obstacles in the environment.
+
+We provide a series of wrappers for our tools to be used in various platform or software. 
+
+||**ROS1**|**ROS2**|**WebAssembly**|**Coppeliasim**|**Mujoco**|  
+|:------|:-----|:-----|:-----|:-----|:-----| 
+|**RangedIK**|[link](https://github.com/uwgraphics/relaxed_ik_ros1/tree/ranged-ik)|[link](https://github.com/uwgraphics/relaxed_ik_ros2)|[link](https://github.com/yepw/relaxed-ik-web-demo/)|x|x|  
+|**CollisionIK**|[link](https://github.com/uwgraphics/relaxed_ik_ros1/)|x|x|x|x|  
+|**RelaxedIK**|[link](https://github.com/uwgraphics/relaxed_ik_ros1/)|x|x|[link](https://github.com/uwgraphics/relaxed_ik_coppeliasim)|[link](https://github.com/uwgraphics/relaxed_ik_mujoco)|  
+
+
 ## Prerequisites
 - You will need to [install ROS 2](https://docs.ros.org/en/iron/Installation.html)
     - If you already have [Conda](https://docs.conda.io/en/latest/) for Python installed on your system, you may run into errors with your python interpreter. A partial fix to this is to make sure you always `conda deactivate` before running any ROS commands, and to set `export COLCON_PYTHON_EXECUTABLE=/usr/bin/python3` to make sure colcon builds with your system Python instead of Conda.
